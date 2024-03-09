@@ -1,4 +1,5 @@
-﻿internal class Program
+﻿using Model;
+internal class Program
 {
     static int maxPets = 8;
     static Pet[] ourAnimals = new Pet[maxPets];
@@ -6,11 +7,11 @@
 
     private static void Main(string[] args)
     {
-        initPetList(); //INIT ANIMAL'S ARRAY
-        showMenu();
+        InitPetList(); //INIT ANIMAL'S ARRAY
+        ShowMenu();
     }
 
-    private static void showMenu()
+    private static void ShowMenu()
     {
         string? menuSelection;
         int option = 0;
@@ -41,22 +42,22 @@
                         switch (option)
                         {
                             case 1:
-                                listAllAnimals();
+                                ListAllAnimals();
                                 break;
                             case 2:
-                                confirmAddPet();
+                                ConfirmAddPet();
                                 break;
                             case 3:
-                                ensureAnimalAgeAndCharacteristics();
+                                EnsureAnimalAgeAndCharacteristics();
                                 break;
                             case 4:
-                                ensureNickNameAndPersonality();
+                                EnsureNickNameAndPersonality();
                                 break;
                             case 5:
-                                showPetsByKindAndCharacteristics(KindAnimal.CAT);
+                                ShowPetsByKindAndCharacteristics(KindAnimal.CAT);
                                 break;
                             case 6:
-                                showPetsByKindAndCharacteristics(KindAnimal.DOG);
+                                ShowPetsByKindAndCharacteristics(KindAnimal.DOG);
                                 break;
                             default:
                                 break;
@@ -75,18 +76,18 @@
         } while (!menuSelection.Equals("exit", StringComparison.OrdinalIgnoreCase));
     }
 
-    private static void listAllAnimals()
+    private static void ListAllAnimals()
     {
         foreach (Pet pet in ourAnimals)
         {
-            if (!pet.getId().Equals(""))
+            if (!pet.ID.Equals(""))
             {
                 Console.WriteLine(pet);
             }
         }
     }
 
-    private static KindAnimal chooseAnimal()
+    private static KindAnimal ChooseAnimal()
     {
         string? input;
         int option = 0;
@@ -122,7 +123,7 @@
         return option == 1 ? KindAnimal.DOG : KindAnimal.CAT;
     }
 
-    private static void initPetList()
+    private static void InitPetList()
     {
         int i = 0;
         while (i < ourAnimals.Length)
@@ -153,7 +154,7 @@
         }
     }
 
-    private static void confirmAddPet()
+    private static void ConfirmAddPet()
     {
         Console.WriteLine($"We currently have {lastIndexAnimal} pets that need homes. We can manage {(maxPets - lastIndexAnimal)} more.");
         string option = "y";
@@ -170,7 +171,7 @@
                     option = readResult.ToLower();
                     if (option.Equals("y"))
                     {
-                        addAnimal();
+                        AddAnimal();
                         lastIndexAnimal++;
                     }
                 }
@@ -183,26 +184,26 @@
         }
     }
 
-    private static void addAnimal()
+    private static void AddAnimal()
     {
-        KindAnimal specie = chooseAnimal();
+        KindAnimal specie = ChooseAnimal();
         string ID = ((specie == KindAnimal.DOG) ? "d" : "c") + (lastIndexAnimal + 1);
 
         Pet pet = new Pet(ID, specie);
         //ADD AGE   
-        addAge(pet, "Enter the pet's age or enter 0 if unknown");
+        AddAge(pet, "Enter the pet's age or enter 0 if unknown");
         //ADD CHARACTERISTICS
-        addCharacteristics(pet, "Enter a physical description of the pet (size, color, gender, weight, housebroken)");
+        AddCharacteristics(pet, "Enter a physical description of the pet (size, color, gender, weight, housebroken)");
         //ADD PERSONALITY
-        addPersonality(pet, "Enter a description of the pet's personality (likes or dislikes, tricks, energy level)");
+        AddPersonality(pet, "Enter a description of the pet's personality (likes or dislikes, tricks, energy level)");
         //ADD NICKNAME
-        addNickName(pet, "Enter a nickname for the pet");
+        AddNickName(pet, "Enter a nickname for the pet");
         //ADD DONATION
-        addDonation(pet, "Suggested donation");
+        AddDonation(pet, "Suggested donation");
         ourAnimals[lastIndexAnimal] = pet;
     }
 
-    private static void addAge(Pet pet, string title)
+    private static void AddAge(Pet pet, string title)
     {
         Console.WriteLine(title);
         string? readResult;
@@ -223,24 +224,24 @@
             }
         } while (age == -1);
 
-        pet.setAge(age);
+        pet.Age = age;
     }
-    private static void addCharacteristics(Pet pet, string title)
+    private static void AddCharacteristics(Pet pet, string title)
     {
-        pet.setCharacteristics(getValidData(title));
+        pet.Characteristics = GetValidData(title);
     }
 
-    private static void addPersonality(Pet pet, string title)
+    private static void AddPersonality(Pet pet, string title)
     {
-        pet.setPersonality(getValidData(title));
+        pet.Personality = GetValidData(title);
     }
 
-    private static void addNickName(Pet pet, string title)
+    private static void AddNickName(Pet pet, string title)
     {
-        pet.setNickName(getValidData(title));
+        pet.NickName = GetValidData(title);
     }
 
-    private static string getValidData(string title)
+    private static string GetValidData(string title)
     {
         Console.WriteLine($"{title}");
         string? readResult;
@@ -260,7 +261,7 @@
         return data;
     }
 
-    private static void addDonation(Pet pet, string title)
+    private static void AddDonation(Pet pet, string title)
     {
         Console.WriteLine($"{title}\n");
         string? readResult;
@@ -293,39 +294,39 @@
             }
         } while (donation == 0);
 
-        pet.setSuggestedDonation(donation);
+        pet.Donation = donation;
     }
 
-    private static bool isInvalidAge(Pet pet)
+    private static bool IsInvalidAge(Pet pet)
     {
-        return pet.getAge() <= 0 || pet.getAge() > 15;
+        return pet.Age <= 0 || pet.Age > 15;
     }
 
-    private static void ensureAnimalAgeAndCharacteristics()
+    private static void EnsureAnimalAgeAndCharacteristics()
     {
         foreach (Pet pet in ourAnimals)
         {
-            if (pet.getId() != "")
+            if (pet.ID != "")
             {
-                bool invalidAge = isInvalidAge(pet);
-                bool invalidCharacteristics = pet.getCharacteristics() == "tbd" || pet.getCharacteristics() == "";
+                bool invalidAge = IsInvalidAge(pet);
+                bool invalidCharacteristics = pet.Characteristics == "tbd" || pet.Characteristics == "";
                 if (invalidAge || invalidCharacteristics)
                 {
                     if (invalidAge)
                     {
                         do
                         {
-                            string title = $"Enter a valid age for ID #: {pet.getId()}";
-                            addAge(pet, title);
-                        } while (isInvalidAge(pet));
+                            string title = $"Enter a valid age for ID #: {pet.ID}";
+                            AddAge(pet, title);
+                        } while (IsInvalidAge(pet));
                     }
                     if (invalidCharacteristics)
                     {
                         do
                         {
-                            string title = $"Enter a physical description for ID #: {pet.getId()} (size, color, breed, gender, weight, housebroken)";
-                            addCharacteristics(pet, title);
-                        } while (pet.getCharacteristics() == "tbd" || pet.getCharacteristics() == "");
+                            string title = $"Enter a physical description for ID #: {pet.ID} (size, color, breed, gender, weight, housebroken)";
+                            AddCharacteristics(pet, title);
+                        } while (pet.Characteristics == "tbd" || pet.Characteristics == "");
                     }
                 }
             }
@@ -333,31 +334,31 @@
         Console.WriteLine("\nAge and physical description fields are complete for all of our friends.");
     }
 
-    private static void ensureNickNameAndPersonality()
+    private static void EnsureNickNameAndPersonality()
     {
         foreach (Pet pet in ourAnimals)
         {
-            if (pet.getId() != "")
+            if (pet.ID != "")
             {
-                bool invalidNickName = pet.getNickName() == "tbd" || pet.getNickName() == "";
-                bool invalidPersonality = pet.getPersonality() == "tbd" || pet.getPersonality() == "";
+                bool invalidNickName = pet.NickName == "tbd" || pet.NickName == "";
+                bool invalidPersonality = pet.Personality == "tbd" || pet.Personality == "";
                 if (invalidNickName || invalidPersonality)
                 {
                     if (invalidNickName)
                     {
                         do
                         {
-                            string title = $"Enter a nickname for ID #: {pet.getId()}";
-                            addNickName(pet, title);
-                        } while (pet.getNickName() == "tbd" || pet.getNickName() == "");
+                            string title = $"Enter a nickname for ID #: {pet.ID}";
+                            AddNickName(pet, title);
+                        } while (pet.NickName == "tbd" || pet.NickName == "");
                     }
                     if (invalidPersonality)
                     {
                         do
                         {
-                            string title = $"Enter a personality description for ID #: {pet.getId()} (likes or dislikes, tricks, energy level)";
-                            addPersonality(pet, title);
-                        } while (pet.getPersonality() == "tbd" || pet.getPersonality() == "");
+                            string title = $"Enter a personality description for ID #: {pet.ID} (likes or dislikes, tricks, energy level)";
+                            AddPersonality(pet, title);
+                        } while (pet.Personality == "tbd" || pet.Personality == "");
                     }
                 }
             }
@@ -365,49 +366,45 @@
         Console.WriteLine("\nNickname and personality description fields are complete for all of our friends.");
     }
 
-    private static void editAge(Pet pet, int age)
-    {
-        pet.setAge(age);
-    }
-
-    private static void editPersonality(Pet pet, string personality)
-    {
-        pet.setPersonality(personality);
-    }
-
-    private static void showPetsByKindAndCharacteristics(KindAnimal specie)
+    private static void ShowPetsByKindAndCharacteristics(KindAnimal specie)
     {
         bool findPattern = false;
-        string description = getValidData("Enter the desired characteristics to search for").ToLower().Trim();
+        string description = GetValidData("Enter the desired characteristics to search for").ToLower().Trim();
         string[] patterns = description.Split(',');
         Array.Sort(patterns);
         foreach (Pet pet in ourAnimals)
         {
-            if (pet.GetKindAnimal() == specie && findPatterns(pet, patterns))
+            if (pet.Specie == specie && FindPatterns(pet, patterns))
             {
                 Console.WriteLine(pet);
-                
-                if (!findPattern) {
+
+                if (!findPattern)
+                {
                     findPattern = true;
-                }                
+                }
             }
         }
 
-        if (!findPattern) {
+        if (!findPattern)
+        {
             Console.WriteLine("None of our pets are a match found");
         }
     }
 
-    private static bool findPatterns(Pet pet, string[] patterns) {
+    private static bool FindPatterns(Pet pet, string[] patterns)
+    {
         bool flag = false;
-        string expression = pet.getCharacteristics() + " " + pet.getPersonality();
-        foreach (string term in patterns) {
-            animatedSearch(pet, term);
+        string expression = pet.Characteristics + " " + pet.Personality;
+        foreach (string term in patterns)
+        {
+            AnimatedSearch(pet, term);
 
-            if (expression.Contains(term)) {
-                Console.WriteLine($"\nOur pet {pet.getNickName()} is a {term} match!");
-                
-                if (!flag) {
+            if (expression.Contains(term))
+            {
+                Console.WriteLine($"\nOur pet {pet.NickName} is a {term} match!");
+
+                if (!flag)
+                {
                     flag = true;
                 }
             }
@@ -415,12 +412,13 @@
         return flag;
     }
 
-    private static void animatedSearch(Pet pet, string term) {
-        string[] searchingIcons = {" |", " /", "--", " \\", " *"};
+    private static void AnimatedSearch(Pet pet, string term)
+    {
+        string[] searchingIcons = [" |", " /", "--", " \\", " *"];
 
         foreach (string icon in searchingIcons)
         {
-            Console.Write($"\rsearching our pet {pet.getNickName()} for {term.Trim()} {icon}");
+            Console.Write($"\rsearching our pet {pet.NickName} for {term.Trim()} {icon}");
             Thread.Sleep(500);
         }
     }

@@ -1,6 +1,9 @@
-enum KindAnimal
+namespace Model
 {
-    DOG,
-    CAT,
-    UNKNOW
+    enum KindAnimal
+    {
+        DOG,
+        CAT,
+        UNKNOW
+    }
 }
